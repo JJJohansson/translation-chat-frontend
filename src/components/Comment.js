@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({
@@ -21,7 +22,9 @@ class Comment extends Component {
     return (
       <div>
         <Paper elevation={1} className={classes.paper}>
-          <p>{this.props.comment.timestamp} ..... {this.props.comment.message}</p>
+          <Typography variant="body1" gutterBottom>
+            {this.props.comment.timestamp} ..... {this.props.comment.message}
+          </Typography>
         </Paper>
       </div>
     );

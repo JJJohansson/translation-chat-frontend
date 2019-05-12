@@ -63,9 +63,7 @@ class ChatBar extends Component {
     
     this.setState({ message: '' }, () => document.getElementById("input").focus());
     axios(request)
-      .then((response) => {
-        this.props.handler(response);
-      })
+      .then(response => console.log(response))
       .catch(error => console.log(error));
   }
 

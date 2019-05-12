@@ -21,7 +21,10 @@ const styles = theme => ({
     flexDirection: 'column',
     marginBottom: 0
   },
-  actions: {
+  topActions: {
+    margin: '0 15px 0 0',
+  },
+  bottomActions: {
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
@@ -41,11 +44,12 @@ const styles = theme => ({
     justifyContent: 'center',
   },
   test: {
-    width: "40%"
+    width: "40%",
+    backgroundColor: 'rgba(0, 0, 0, 0.25)',
   },
   dividerText: {
     margin: 10,
-    color: 'rgba(0, 0, 0, 0.5)',
+    color: 'rgba(0, 0, 0, 0.3)',
   }
 });
 
@@ -54,6 +58,7 @@ class LoginDialog extends Component {
     super(props);
     this.state = {
       open: false,
+      fullWidth: 'sm',
       email: '',
       password: '',
       emailError: false,
@@ -81,8 +86,9 @@ class LoginDialog extends Component {
     firebaseApp.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
     .then((result) => {
       console.log(result);
+      this.props.handler(result);
       firebaseApp.auth().currentUser.getIdToken(true)
-        .then(idToken => console.log(idToken))
+        .then((idToken) => console.log(idToken))
         .catch(error => console.error(error));
     })
     .catch((error) => {
@@ -102,6 +108,8 @@ class LoginDialog extends Component {
         <Dialog
           open={this.state.open}
           onClose={this.handleClose}
+          maxWidth={'sm'}
+          fullWidth
         >
           <DialogTitle id="form-dialog-title">Login</DialogTitle>
           <DialogContent className={classes.content}>
@@ -133,9 +141,9 @@ class LoginDialog extends Component {
               helperText={this.state.passwordError ? this.state.passwordErrorMessage : ''}
             />
           </DialogContent>
-          <DialogActions>
+          <DialogActions className={classes.topActions}>
             <div>
-              <Button onClick={this.handleClose} color="secondary">
+              <Button onClick={this.handleClose} color="default">
                 CANCEL
               </Button>
               <Button onClick={this.handleLogin} color="primary">
@@ -143,7 +151,7 @@ class LoginDialog extends Component {
               </Button>
             </div>
           </DialogActions>
-          <DialogActions className={classes.actions}>
+          <DialogActions className={classes.bottomActions}>
             <div className={classes.divider}>
               <Divider className={classes.test} light={false} />
               <Typography className={classes.dividerText} component="h6" variant="h6" gutterBottom>

@@ -67,7 +67,7 @@ class Background extends Component {
     const { classes } = this.props;
     return (
       <div>
-        <LoginDialog open={this.state.loginDialog} />
+        <LoginDialog open={this.state.loginDialog} handler={this.handler} />
         <Card className={classes.card}>
           <Paper>
             <CardHeader
@@ -87,7 +87,7 @@ class Background extends Component {
             </div>
             {this.state.loggedIn ? 
               <div className={classes.chatbar}>
-                <ChatBar handler={this.handler} />
+                <ChatBar />
               </div>
             :
               <div className={classes.login}>
