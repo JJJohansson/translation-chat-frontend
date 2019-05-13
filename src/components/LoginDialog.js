@@ -31,7 +31,8 @@ const styles = theme => ({
   },
   thirdPartyLogins: {
     margin: '0 0 15px 20px',
-    cursor: 'pointer',
+    '& img': {
+      cursor: 'pointer'},
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -69,10 +70,15 @@ class LoginDialog extends Component {
   }
 
   componentWillReceiveProps(props) {
-    if (props.open) this.setState({ open: true });
+    if (props.openLoginDialog) this.setState({ open: true });
+  }
+
+  componentWillUnmount() {
+    console.log('closing..')
   }
 
   handleClose = () => {
+    this.props.dialogHandler({ loginDialog: false });
     this.setState({ open: false });
   }
 
@@ -86,7 +92,6 @@ class LoginDialog extends Component {
     firebaseApp.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
     .then((result) => {
       console.log(result);
-      this.props.handler(result);
       firebaseApp.auth().currentUser.getIdToken(true)
         .then((idToken) => console.log(idToken))
         .catch(error => console.error(error));
@@ -110,6 +115,7 @@ class LoginDialog extends Component {
           onClose={this.handleClose}
           maxWidth={'sm'}
           fullWidth
+          disableBackdropClick={true}
         >
           <DialogTitle id="form-dialog-title">Login</DialogTitle>
           <DialogContent className={classes.content}>

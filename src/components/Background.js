@@ -4,6 +4,7 @@ import '../App.css';
 import ChatBar from './ChatBar';
 import Comments from './Comments';
 import LoginDialog from './LoginDialog';
+import RegisterDialog from './RegisterDialog';
 
 import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
@@ -51,23 +52,27 @@ const styles = theme => ({
 });
 
 class Background extends Component {
-  constructor(props) {
+  constructor(props) { 
     super(props);
     this.state = {
       loggedIn: false,
-      loginDialog: true,
+      loginDialog: false,
+      registerDialog: false,
     };
   }
 
-  handler = (data) => {
-    console.log(data);
+  dialogHandler = (data) => {
+    console.log(data.registerDialog);
+    if (data.loginDialog === false) this.setState({ loginDialog: data.loginDialog });
+    if (data.registerDialog === false) this.setState({ registerDialog: data.registerDialog });
   }
 
   render() {
     const { classes } = this.props;
     return (
       <div>
-        <LoginDialog open={this.state.loginDialog} handler={this.handler} />
+        <LoginDialog openLoginDialog={this.state.loginDialog} dialogHandler={this.dialogHandler} />
+        <RegisterDialog openRegisterDialog={this.state.registerDialog} dialogHandler={this.dialogHandler} />
         <Card className={classes.card}>
           <Paper>
             <CardHeader
@@ -85,7 +90,8 @@ class Background extends Component {
             <div id="comments" className={classes.comments}>
               <Comments />
             </div>
-            {this.state.loggedIn ? 
+            {this.state.loggedIn
+            ?
               <div className={classes.chatbar}>
                 <ChatBar />
               </div>
@@ -105,7 +111,7 @@ class Background extends Component {
                     underline="none"
                     component="a"
                     variant="h6"
-                    onClick={() => prompt('And this should be a register dialog..')}
+                    onClick={() => this.setState({registerDialog: true})}
                   > Subscribe </Link>
                   to send messages
                 </Typography>
