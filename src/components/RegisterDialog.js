@@ -11,7 +11,15 @@ import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 
-export default class RegisterDialog extends Component {
+const styles = theme => ({
+  content: {
+    display: 'flex',
+    flexDirection: 'column',
+    marginBottom: 0
+  },
+});
+
+class RegisterDialog extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -49,6 +57,7 @@ export default class RegisterDialog extends Component {
   }
 
   render() {
+    const { classes } = this.props;
     return (
       <div>
         <Dialog
@@ -59,7 +68,7 @@ export default class RegisterDialog extends Component {
           disableBackdropClick={true}
         >
           <DialogTitle id="form-dialog-title">Register</DialogTitle>
-          <DialogContent>
+          <DialogContent className={classes.content}>
             <DialogContentText>
               Register
             </DialogContentText>
@@ -115,3 +124,5 @@ export default class RegisterDialog extends Component {
     )
   }
 }
+
+export default withStyles(styles)(RegisterDialog);

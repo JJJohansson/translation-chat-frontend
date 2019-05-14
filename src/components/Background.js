@@ -56,6 +56,7 @@ class Background extends Component {
     super(props);
     this.state = {
       loggedIn: false,
+      user: '',
       loginDialog: false,
       registerDialog: false,
     };
@@ -67,11 +68,15 @@ class Background extends Component {
     if (data.registerDialog === false) this.setState({ registerDialog: data.registerDialog });
   }
 
+  loginHandler = (user) => {
+    if (user.email) this.setState({ loggedIn: true, user: user.email });
+  }
+
   render() {
     const { classes } = this.props;
     return (
       <div>
-        <LoginDialog openLoginDialog={this.state.loginDialog} dialogHandler={this.dialogHandler} />
+        <LoginDialog openLoginDialog={this.state.loginDialog} dialogHandler={this.dialogHandler} loginHandler={this.loginHandler} />
         <RegisterDialog openRegisterDialog={this.state.registerDialog} dialogHandler={this.dialogHandler} />
         <Card className={classes.card}>
           <Paper>
@@ -83,7 +88,7 @@ class Background extends Component {
                 </Avatar>
               }
               title="Chat"
-              subheader="Bleep bloop"
+              subheader={this.state.loggedIn ? this.state.user : "Bleep bloop"}
             />
           </Paper>
           <CardContent className={classes.content}>
@@ -93,7 +98,7 @@ class Background extends Component {
             {this.state.loggedIn
             ?
               <div className={classes.chatbar}>
-                <ChatBar />
+                <ChatBar user={this.state.user} />
               </div>
             :
               <div className={classes.login}>

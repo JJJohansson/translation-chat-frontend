@@ -91,10 +91,12 @@ class LoginDialog extends Component {
 
     firebaseApp.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
     .then((result) => {
-      console.log(result);
-      firebaseApp.auth().currentUser.getIdToken(true)
+      this.props.loginHandler(result.user);
+      this.handleClose();
+      /*firebaseApp.auth().currentUser.getIdToken(true)
         .then((idToken) => console.log(idToken))
         .catch(error => console.error(error));
+      */
     })
     .catch((error) => {
       // there are 4 different errors. 1 for password and 3 for email.
