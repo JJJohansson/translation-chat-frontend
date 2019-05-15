@@ -15,16 +15,20 @@ import Chat from '@material-ui/icons/Chat';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
+import Select from '@material-ui/core/Select';
 
 const styles = theme => ({
   card: {
-    maxWidth: '80vw',
+    maxWidth: '70vw',
     minWidth: '65vw',
     height: '80vh',
     margin: 'auto',
   },
   header: {
     width: '100%',
+  },
+  headerPaper: {
+    height: 40
   },
   content: {
     height: '100%',
@@ -59,6 +63,13 @@ class Background extends Component {
       user: '',
       loginDialog: false,
       registerDialog: false,
+      languages: [
+        'finnish',
+        'swedish',
+        'german',
+        'russian',
+        'english'
+      ],
     };
   }
 
@@ -74,12 +85,13 @@ class Background extends Component {
 
   render() {
     const { classes } = this.props;
+    const options = this.state.languages.map(language => <option key={language} value={language}>{language}</option>)
     return (
       <div>
         <LoginDialog openLoginDialog={this.state.loginDialog} dialogHandler={this.dialogHandler} loginHandler={this.loginHandler} />
         <RegisterDialog openRegisterDialog={this.state.registerDialog} dialogHandler={this.dialogHandler} />
         <Card className={classes.card}>
-          <Paper>
+          <Paper classname={classes.headerPaper}>
             <CardHeader
               className={classes.header}
               avatar={

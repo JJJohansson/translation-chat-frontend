@@ -10,6 +10,7 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 import GithubLogo from '../icons/GitHub-Mark-32px.png';
 import FacebookLogo from '../icons/f_logo_RGB-Blue_58.png';
@@ -66,6 +67,7 @@ class LoginDialog extends Component {
       emailErrorMessage: '',
       passwordError: false,
       passwordErrorMessage: '',
+      loading: false,
     };
   }
 
@@ -89,22 +91,25 @@ class LoginDialog extends Component {
   handleLogin = () => {
     if (!this.state.email || !this.state.password) return;
 
-    firebaseApp.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
-    .then((result) => {
-      this.props.loginHandler(result.user);
-      this.handleClose();
-      /*firebaseApp.auth().currentUser.getIdToken(true)
-        .then((idToken) => console.log(idToken))
-        .catch(error => console.error(error));
-      */
-    })
-    .catch((error) => {
-      // there are 4 different errors. 1 for password and 3 for email.
-      if (error.code === 'auth/wrong-password') {
-        this.setState({ passwordError: true, passwordErrorMessage: error.message });
-      } else {
-        this.setState({ emailError: true, emailErrorMessage: error.message });
-      }
+    this.setState({ loading: true}, () => {
+      firebaseApp.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
+      .then((result) => {
+        this.setState({ loading: false });
+        this.props.loginHandler(result.user);
+        this.handleClose();
+        /*firebaseApp.auth().currentUser.getIdToken(true)
+          .then((idToken) => console.log(idToken))
+          .catch(error => console.error(error));
+        */
+      })
+      .catch((error) => {
+        // there are 4 different errors. 1 for password and 3 for email.
+        if (error.code === 'auth/wrong-password') {
+          this.setState({ passwordError: true, passwordErrorMessage: error.message, loading: false });
+        } else {
+          this.setState({ emailError: true, emailErrorMessage: error.message, loading: false });
+        }
+      });
     });
   }
 
@@ -119,6 +124,7 @@ class LoginDialog extends Component {
           fullWidth
           disableBackdropClick={true}
         >
+          {this.state.loading ? <LinearProgress /> : null}
           <DialogTitle id="form-dialog-title">Login</DialogTitle>
           <DialogContent className={classes.content}>
             <DialogContentText>

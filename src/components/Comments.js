@@ -26,7 +26,7 @@ class Comments extends Component {
           const messages = [];
   
           snapshot.forEach((child) => {
-            //console.log(child.val());
+            console.log(child.val());
 
             const timestamp = Number(child.val().timestamp);
             const date = new Date(timestamp).getDate();
@@ -38,7 +38,7 @@ class Comments extends Component {
             //const UTC = new Date(timestamp).toUTCString();
             const time = `${date}/${month}/${year} ${hour}:${minutes}:${seconds}`;
   
-            messages.push({ key: child.key, timestamp: time, message: child.val().message });
+            messages.push({ key: child.key, timestamp: time, message: child.val().translations[4].message });
           });
   
           this.setState({ messages }, () => {

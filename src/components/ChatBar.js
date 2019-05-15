@@ -34,7 +34,8 @@ const styles = theme => ({
     marginLeft: theme.spacing.unit,
   },
   select: {
-    width: '15%',
+    width: 100,
+    minWidth: 100,
     '&:hover': {
       border: 'none'
     },
@@ -51,7 +52,7 @@ class ChatBar extends Component {
       message: '',
       user: '',
       chatbarFocused: false,
-      language: '',
+      language: 'en',
       languages: []
     };
   }
@@ -91,16 +92,16 @@ class ChatBar extends Component {
     const message = this.state.message;
     const user = this.state.user;
     const language = this.state.language;
-    const data = { timestamp:timestamp, message:message, user:user, languag:language };
+    const data = { timestamp:timestamp, message:message, user:user, language:language };
     const request = {
       method: 'post',
-      url: 'http://localhost:3001',
+      url: 'http://localhost:3001/message',
       data: data,
     };
     
     this.setState({ message: '' }, () => document.getElementById("input").focus());
     axios(request)
-      .then(response => console.log(response))
+      .then(response => console.log(response.data))
       .catch(error => console.log(error));
   }
 
@@ -113,6 +114,7 @@ class ChatBar extends Component {
   }
 
   handleLanguageChange = (e) => {
+    console.log(e.target.value)
     this.setState({ language: e.target.value });
   }
 
