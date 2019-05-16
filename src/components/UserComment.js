@@ -11,12 +11,12 @@ const styles = theme => ({
     justifyContent: 'space-between',
     maxWidth: "70%",
     minWidth: '20%',
-    margin: 10,
-    backgroundColor: '#f2f2f2',
+    margin: 10,   
+    backgroundColor: '#d6f5d6',
   },
   userComment: {
     display: 'flex',
-    justifyContent: 'flex-start'
+    justifyContent: 'flex-end'
   },
   message: {
   },
@@ -27,30 +27,18 @@ const styles = theme => ({
     flexDirection: 'column',
     justifyContent: 'flex-end',
     margin: '15px 0 0 15px'
-  },
-  user: {
-    fontSize: 12
-  },
-  leftSide: {
-    display: 'flex',
-    flexDirection: 'column',
   }
 });
 
-class Comment extends Component {
+class UserComment extends Component {
   render() {
     const { classes } = this.props;
     return (
       <div className={classes.userComment}>
         <Paper elevation={1} className={classes.paper}>
-          <div className={classes.leftSide}>
-            <Typography className={classes.user} variant="subtitle1" gutterBottom>
-              {this.props.comment.user}
-            </Typography>
-            <Typography className={classes.message} variant="body1" gutterBottom>
-              {this.props.comment.message}
-            </Typography>
-          </div>
+          <Typography className={classes.message} variant="body1" gutterBottom>
+            {this.props.comment.message}
+          </Typography>
           <Typography className={classes.timestamp} variant="subtitle1" gutterBottom>
             {this.props.comment.timestamp}
           </Typography>
@@ -60,4 +48,4 @@ class Comment extends Component {
   }
 }
 
-export default withStyles(styles)(Comment);
+export default withStyles(styles)(UserComment);

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import firebase from 'firebase';
 import { firebaseApp } from '../util/firebase_config';
 import { withStyles } from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
@@ -16,7 +17,7 @@ import GithubLogo from '../icons/GitHub-Mark-32px.png';
 import FacebookLogo from '../icons/f_logo_RGB-Blue_58.png';
 import GoogleSignin from '../icons/btn_google_signin_dark_focus_web.png';
 
-const styles = theme => ({
+const styles = {
   content: {
     display: 'flex',
     flexDirection: 'column',
@@ -53,7 +54,7 @@ const styles = theme => ({
     margin: 10,
     color: 'rgba(0, 0, 0, 0.3)',
   }
-});
+};
 
 class LoginDialog extends Component {
   constructor(props) {
@@ -95,7 +96,6 @@ class LoginDialog extends Component {
       firebaseApp.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
       .then((result) => {
         this.setState({ loading: false });
-        this.props.loginHandler(result.user);
         this.handleClose();
         /*firebaseApp.auth().currentUser.getIdToken(true)
           .then((idToken) => console.log(idToken))
@@ -110,6 +110,40 @@ class LoginDialog extends Component {
           this.setState({ emailError: true, emailErrorMessage: error.message, loading: false });
         }
       });
+    });
+  }
+
+  handleGoogleLogin = () => {
+    console.log('google login bleep bloop');
+    const provider = new firebase.auth.GoogleAuthProvider();
+    this.setState({ loading: true }, () => {
+      firebase.auth().signInWithPopup(provider)
+        .then((result) => {
+          console.log(result);
+          this.setState({ loading: false });
+          this.handleClose();
+        })
+        .catch((error) => {
+          console.log(error);
+          this.setState({ loading: false });
+        });
+    });
+  }
+
+  handleGitHubLogin = () => {
+    console.log('github login bleep bloop');
+    const provider = new firebase.auth.GithubAuthProvider();
+    this.setState({ loading: true }, () => {
+      firebase.auth().signInWithPopup(provider)
+        .then((result) => {
+          console.log(result);
+          this.setState({ loading: false });
+          this.handleClose();
+        })
+        .catch((error) => {
+          console.log(error);
+          this.setState({ loading: false });
+        });
     });
   }
 
@@ -174,9 +208,9 @@ class LoginDialog extends Component {
               <Divider className={classes.test} light={false} />
             </div>
             <div className={classes.thirdPartyLogins}>
-              <img src={GithubLogo} alt="GitHub logo" />
+              <img src={GithubLogo} alt="GitHub logo" onClick={this.handleGitHubLogin} />
               <img src={FacebookLogo} alt="Facebook logo" height="32" width="32" />
-              <img src={GoogleSignin} alt={"Google sign-in"} />
+              <img src={GoogleSignin} alt={"Google sign-in"} onClick={this.handleGoogleLogin} />
             </div>
           </DialogActions>
         </Dialog>

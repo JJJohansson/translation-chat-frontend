@@ -1,11 +1,11 @@
 import React from 'react';
-import Background from './components/Background';
+import ChatLayout from './components/ChatLayout';
 
 class App extends React.Component {
   render() {
     return (
       <div className="App">
-        <Background />
+        <ChatLayout />
       </div>
     );
   }

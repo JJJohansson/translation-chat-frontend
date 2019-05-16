@@ -41,6 +41,9 @@ const styles = theme => ({
     },
     '&::before':{
       content: 'none'
+    },
+    '&::after': {
+      borderBottom: 'none'
     }
   }
 });
@@ -59,6 +62,7 @@ class ChatBar extends Component {
 
   componentDidMount() {
     this.fetchLanguageOptions();
+    this.props.language(this.state.language);
     window.addEventListener("keydown", (event) => this.handleKeyPress(event));
   }
 
@@ -115,7 +119,7 @@ class ChatBar extends Component {
 
   handleLanguageChange = (e) => {
     console.log(e.target.value)
-    this.setState({ language: e.target.value });
+    this.setState({ language: e.target.value }, () => this.props.language(this.state.language));
   }
 
   render() {

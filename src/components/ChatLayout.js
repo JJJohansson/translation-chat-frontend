@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
+import { firebaseApp } from '../util/firebase_config';
 import '../App.css';
 
+import ChatHeader from './ChatHeader';
 import ChatBar from './ChatBar';
 import Comments from './Comments';
 import LoginDialog from './LoginDialog';
@@ -8,16 +10,11 @@ import RegisterDialog from './RegisterDialog';
 
 import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent'
-import Avatar from '@material-ui/core/Avatar';
-import Chat from '@material-ui/icons/Chat';
-import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
-import Select from '@material-ui/core/Select';
 
-const styles = theme => ({
+const styles = {
   card: {
     maxWidth: '70vw',
     minWidth: '65vw',
@@ -28,7 +25,6 @@ const styles = theme => ({
     width: '100%',
   },
   headerPaper: {
-    height: 40
   },
   content: {
     height: '100%',
@@ -53,9 +49,9 @@ const styles = theme => ({
   link: {
     cursor: 'pointer'
   }
-});
+};
 
-class Background extends Component {
+class ChatLayout extends Component {
   constructor(props) { 
     super(props);
     this.state = {
@@ -63,54 +59,52 @@ class Background extends Component {
       user: '',
       loginDialog: false,
       registerDialog: false,
-      languages: [
-        'finnish',
-        'swedish',
-        'german',
-        'russian',
-        'english'
-      ],
+      language: '',
     };
+    this.authStateListener = this.authStateListener();
+  }
+
+  authStateListener = () => {
+    firebaseApp.auth().onAuthStateChanged((user) => {
+      if (user) {
+        this.setState({ loggedIn: true, user: user.email });
+      } else {
+        this.setState({ loggedIn: false, user: '' });
+      }
+    })
   }
 
   dialogHandler = (data) => {
-    console.log(data.registerDialog);
     if (data.loginDialog === false) this.setState({ loginDialog: data.loginDialog });
     if (data.registerDialog === false) this.setState({ registerDialog: data.registerDialog });
   }
 
-  loginHandler = (user) => {
-    if (user.email) this.setState({ loggedIn: true, user: user.email });
+  handleLogout = () => {
+    firebaseApp.auth().signOut()
+      .then(result => console.log(result))
+      .catch(error => console.log(error));
+  }
+
+  languageHandler = (language) => {
+    this.setState({ language });
   }
 
   render() {
     const { classes } = this.props;
-    const options = this.state.languages.map(language => <option key={language} value={language}>{language}</option>)
     return (
       <div>
-        <LoginDialog openLoginDialog={this.state.loginDialog} dialogHandler={this.dialogHandler} loginHandler={this.loginHandler} />
+        <LoginDialog openLoginDialog={this.state.loginDialog} dialogHandler={this.dialogHandler} />
         <RegisterDialog openRegisterDialog={this.state.registerDialog} dialogHandler={this.dialogHandler} />
         <Card className={classes.card}>
-          <Paper classname={classes.headerPaper}>
-            <CardHeader
-              className={classes.header}
-              avatar={
-                <Avatar aria-label="Icon">
-                  <Chat />
-                </Avatar>
-              }
-              title="Chat"
-              subheader={this.state.loggedIn ? this.state.user : "Bleep bloop"}
-            />
-          </Paper>
+          <ChatHeader loggedIn={this.state.loggedIn} user={this.state.user} handleLogout={this.handleLogout} />
           <CardContent className={classes.content}>
             <div id="comments" className={classes.comments}>
-              <Comments />
+              <Comments language={this.state.language} user={this.state.user} />
             </div>
             {this.state.loggedIn
             ?
               <div className={classes.chatbar}>
-                <ChatBar user={this.state.user} />
+                <ChatBar user={this.state.user} language={this.languageHandler} />
               </div>
             :
               <div className={classes.login}>
@@ -141,4 +135,4 @@ class Background extends Component {
   }
 }
 
-export default withStyles(styles)(Background);
+export default withStyles(styles)(ChatLayout);

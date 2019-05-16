@@ -8,16 +8,14 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import Divider from '@material-ui/core/Divider';
-import Typography from '@material-ui/core/Typography';
 
-const styles = theme => ({
+const styles = {
   content: {
     display: 'flex',
     flexDirection: 'column',
     marginBottom: 0
   },
-});
+};
 
 class RegisterDialog extends Component {
   constructor(props) {
@@ -53,7 +51,22 @@ class RegisterDialog extends Component {
   }
 
   handleRegister = () => {
-    console.log('asd');
+    if (this.state.password !== this.state.retypePassword) return;
+    if (this.state.email.length === 0) return;
+    
+    firebaseApp.auth().createUserWithEmailAndPassword(this.state.email, this.state.password)
+      .then(result => {
+        if (result) this.handleClose();
+      })
+      .catch((error) => {
+      // Handle Errors here.
+      if (error.code === 'auth/invalid-email' || error.code === 'auth/email-already-in-use') {
+        this.setState({ emailError: true, emailErrorText: error.message });
+      }
+      if (error.code === 'auth/weak-password') {
+        this.setState({ passwordError: true, passwordErrorText: error.message });
+      }
+    });
   }
 
   render() {
@@ -114,7 +127,7 @@ class RegisterDialog extends Component {
               <Button onClick={this.handleClose} color="default">
                 CANCEL
               </Button>
-              <Button onClick={this.handleLogin} color="primary">
+              <Button onClick={this.handleRegister} color="primary">
                 REGISTER
               </Button>
             </div>
